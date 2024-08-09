@@ -1,0 +1,76 @@
+import React, { Component } from 'react';
+
+interface VideoDownloaderState {
+  videoUrl: string;
+  downloadLink: string | null;
+}
+
+class VideoDownloader extends Component<{}, VideoDownloaderState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      videoUrl: '',
+      downloadLink: null,
+    };
+  }
+
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ videoUrl: event.target.value });
+  };
+
+  fetchVideo = async () => {
+    const { videoUrl } = this.state;
+    try {
+      // Initiating the fetch request to get the video.
+      const response = await fetch(videoUrl);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch video: ${response.statusText}`);
+      }
+
+      // Reading the response as a blob.
+      const blob = await response.blob();
+
+      // Creating a download link for the blob.
+      const downloadLink = URL.createObjectURL(blob);
+      this.setState({ downloadLink });
+    } catch (error) {
+      console.error('Error fetching video:', error);
+      alert('Failed to download the video. Please check the URL and try again.');
+    }
+  };
+
+  render() {
+    const { videoUrl, downloadLink } = this.state;
+
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-4">
+        <h1 className="text-3xl font-bold mb-6">Video Downloader</h1>
+        <input
+          type="text"
+          value={videoUrl}
+          onChange={this.handleInputChange}
+          placeholder="Enter video URL"
+          className="w-full max-w-md p-2 mb-4 text-black rounded-lg shadow-md"
+        />
+        <button
+          onClick={this.fetchVideo}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300"
+        >
+          Fetch Video
+        </button>
+        {downloadLink && (
+          <a
+            href={downloadLink}
+            download="video.mp4"
+            className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300"
+          >
+            Download Video
+          </a>
+        )}
+      </div>
+    );
+  }
+}
+
+export default VideoDownloader;
