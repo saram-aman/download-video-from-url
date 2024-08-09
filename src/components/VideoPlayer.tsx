@@ -15,18 +15,19 @@ const VideoPlayer: React.FC = () => {
 
         fetch(videoUrl, { method: 'HEAD' })
             .then((response) => {
+                console.log('response =>', response)
                 if (!response.ok) {
                     throw new Error('Video could not be loaded.');
                 }
             })
             .catch((err) => setError(err.message));
     }, [videoUrl]);
-    
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
-            <h2 className="text-4xl font-bold mb-8 text-blue-400">Watch and Download</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-4">
+            <h2 className="text-4xl font-bold mb-8 text-blue-300">Watch and Download</h2>
             {error ? (
-                <div className="text-red-500 mb-6">{error}</div>
+                <div className="text-2xl font-bold text-red-500 mb-6">{error}</div>
             ) : (
                 <video controls className="max-w-full max-h-screen mb-6 rounded-lg shadow-lg">
                     <source src={videoUrl || ''} type="video/mp4" />

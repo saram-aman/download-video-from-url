@@ -38,8 +38,8 @@ class VideoDownloader extends Component<{ navigate: any }, VideoDownloaderState>
         const { videoUrl, isLoading } = this.state;
 
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
-                <h1 className="text-4xl font-bold mb-8 text-blue-400">Video Downloader</h1>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-4">
+                <h1 className="text-4xl font-bold mb-8 text-blue-300">Video Downloader</h1>
                 <input type="text" value={videoUrl} onChange={this.handleInputChange} placeholder="Enter video URL" className="w-full max-w-md p-3 mb-6 text-black rounded-lg shadow-md" />
                 <button onClick={this.fetchVideo} className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isLoading}>
                     {isLoading ? (
