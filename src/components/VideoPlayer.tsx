@@ -15,7 +15,6 @@ const VideoPlayer: React.FC = () => {
 
         fetch(videoUrl, { method: 'HEAD' })
             .then((response) => {
-                console.log('response =>', response)
                 if (!response.ok) {
                     throw new Error('Video could not be loaded.');
                 }
