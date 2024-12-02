@@ -1,28 +1,21 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { load } from 'cheerio';
-import { useNavigate } from 'react-router-dom';
 
 interface VideoDownloaderState {
     videoUrl: string;
     isLoading: boolean;
-    actualVideoUrl: string;
+    actualVideoUrl: string | null;
+    error: string | null;
 }
 
-function withRouter(Component: React.ComponentType<any>) {
-    return (props: any) => {
-        const navigate = useNavigate();
-        return <Component {...props} navigate={navigate} />;
-    };
-}
-
-class VideoDownloader extends Component<{ navigate: any }, VideoDownloaderState> {
-    constructor(props: any) {
+class VideoDownloader extends Component<{}, VideoDownloaderState> {
+    constructor(props: {}) {
         super(props);
         this.state = {
             videoUrl: '',
             isLoading: false,
-            actualVideoUrl: ''
+            actualVideoUrl: null,
+            error: null,
         };
     }
 
@@ -30,56 +23,78 @@ class VideoDownloader extends Component<{ navigate: any }, VideoDownloaderState>
         this.setState({ videoUrl: event.target.value });
     };
 
-    fetchVideoUrl = async (pageUrl: string): Promise<string> => {
-        try {
-            const response = await axios.get(pageUrl);
-            const html = response.data;
-            const $ = load(html);
-            const videoElement = $('video source');
-            const videoUrl = videoElement.attr('src');
-            if (!videoUrl) throw new Error('Video URL not found on the page.');
-            return videoUrl.startsWith('http') ? videoUrl : `${new URL(pageUrl).origin}${videoUrl}`;
-        } catch (error) {
-            console.error('Error fetching video URL:', error);
-            throw error;
-        }
-    };
-
     fetchVideo = async () => {
-        this.setState({ isLoading: true });
+        const { videoUrl } = this.state;
+
+        if (!videoUrl.trim()) {
+            this.setState({ error: 'Please enter a valid URL.', isLoading: false });
+            return;
+        }
+
+        this.setState({ isLoading: true, error: null, actualVideoUrl: null });
+
         try {
-            const actualVideoUrl = await this.fetchVideoUrl(this.state.videoUrl);
-            this.setState({ actualVideoUrl });
-            this.props.navigate(`/video-player?url=${encodeURIComponent(actualVideoUrl)}`);
-        } catch (error) {
-            console.error('Error fetching video:', error);
+            const response = await axios.post('/api/fetch-video-urls', { pageUrl: videoUrl });
+            const videoUrls = response.data.videoUrls;
+
+            if (videoUrls && videoUrls.length > 0) {
+                this.setState({ actualVideoUrl: videoUrls[0], error: null });
+            } else {
+                this.setState({ error: 'No video URLs found.' });
+            }
+        } catch (err) {
+            this.setState({
+                error: 'Error fetching video. Please try again later.',
+            });
         } finally {
             this.setState({ isLoading: false });
         }
     };
 
     render() {
-        const { videoUrl, isLoading, actualVideoUrl } = this.state;
+        const { videoUrl, isLoading, actualVideoUrl, error } = this.state;
 
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-4">
-                <h1 className="text-4xl font-bold mb-8 text-blue-300">Video Downloader</h1>
-                <input type="text" value={videoUrl} onChange={this.handleInputChange} placeholder="Enter page URL" className="w-full max-w-md p-3 mb-6 text-black rounded-lg shadow-md" />
-                <button onClick={this.fetchVideo} className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isLoading}>
-                    {isLoading ? (
-                        <div className="loader ease-linear rounded-full border-8 border-t-8 border-blue-400 h-8 w-8"></div>
-                    ) : (
-                        'Fetch Video'
-                    )}
-                </button>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 text-white p-6">
+                <h1 className="text-5xl font-extrabold text-blue-300 mb-8">Video Downloader</h1>
+                <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
+                    <input
+                        type="text"
+                        value={videoUrl}
+                        onChange={this.handleInputChange}
+                        placeholder="Enter video page URL"
+                        className="w-full p-3 mb-4 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <button
+                        onClick={this.fetchVideo}
+                        className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md transition-transform duration-200 ${
+                            isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                        }`}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Fetching...' : 'Fetch Video'}
+                    </button>
+                </div>
+                {error && <p className="text-red-400 mt-4">{error}</p>}
                 {actualVideoUrl && (
-                    <a href={actualVideoUrl} download className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 mt-4">
-                        Download Video
-                    </a>
+                    <div className="mt-10 text-center">
+                        <video
+                            controls
+                            src={actualVideoUrl}
+                            className="rounded-lg shadow-lg max-w-full border-4 border-blue-400"
+                        ></video>
+                        <a
+                            href={actualVideoUrl}
+                            download
+                            className="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform duration-200 hover:scale-105"
+                        >
+                            Download Video
+                        </a>
+                    </div>
                 )}
             </div>
         );
     }
 }
 
-export default withRouter(VideoDownloader);
+export default VideoDownloader;
