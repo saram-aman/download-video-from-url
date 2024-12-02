@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const origin_url = 'video-download-api.vercel.app/';
 
 interface VideoDownloaderState {
     pageUrl: string;
@@ -31,7 +32,7 @@ class VideoDownloader extends Component<{ navigate: any }, VideoDownloaderState>
 
     fetchVideoUrls = async (pageUrl: string) => {
         try {
-            const response = await axios.post('http://localhost:4000/fetch-video-urls', { pageUrl });
+            const response = await axios.post(origin_url + 'fetch-video-urls', { pageUrl });
             return response.data.videoUrls;
         } catch (error) {
             console.error('Error fetching video URLs:', error);
