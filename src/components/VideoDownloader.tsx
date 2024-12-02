@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-const origin_url = 'video-download-api.vercel.app/';
+const origin_url = 'https://video-download-api.vercel.app/';
 
 interface VideoDownloaderState {
     pageUrl: string;
