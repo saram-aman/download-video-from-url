@@ -31,7 +31,7 @@ class VideoDownloader extends Component<{}, VideoDownloaderState> {
                 throw new Error('Please enter a valid URL.');
             }
 
-            const response = await axios.post('/api/fetch-video-urls', { pageUrl: videoUrl });
+            const response = await axios.post('https://video-download-api.vercel.app/fetch-video-urls', { pageUrl: videoUrl });
             const { videoUrls } = response.data;
 
             if (!videoUrls || videoUrls.length === 0) {
