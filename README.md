@@ -1,46 +1,149 @@
-# Getting Started with Create React App
+# Video Downloader - Download from Any URL
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, full-featured video downloader supporting 1000+ platforms including YouTube, Vimeo, X (Twitter), Instagram, TikTok, and more.
 
-## Available Scripts
+![Premium UI](https://img.shields.io/badge/UI-Premium-blueviolet) ![yt--dlp](https://img.shields.io/badge/Powered%20by-yt--dlp-red)
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+✨ **Universal Support** - Download from YouTube, Vimeo, X, Instagram, TikTok, and 1000+ other platforms  
+✂️ **Video Trimming** - Cut videos to specific time ranges  
+🎬 **Quality Selection** - Choose from multiple quality options  
+⚡ **Fast Processing** - Powered by yt-dlp  
+🎨 **Beautiful UI** - Modern, glassmorphic design with smooth animations
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Before running this application, you need to install **yt-dlp**:
 
-### `npm test`
+### Windows
+```bash
+# Option 1: Using winget (recommended)
+winget install yt-dlp
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Option 2: Using pip
+pip install yt-dlp
+```
 
-### `npm run build`
+### macOS
+```bash
+brew install yt-dlp
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Linux
+```bash
+# Using pip
+pip install yt-dlp
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Or download binary
+sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
+sudo chmod a+rx /usr/local/bin/yt-dlp
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Verify installation:
+```bash
+yt-dlp --version
+```
 
-### `npm run eject`
+## Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. **Clone the repository**
+```bash
+cd download-video-from-url
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Running the Application
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You need to run **both** the backend and frontend servers:
 
-## Learn More
+### Terminal 1 - Backend Server (Port 4000)
+```bash
+node server.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You should see:
+```
+🚀 Video downloader backend running on http://localhost:4000
+📁 Downloads directory: C:\...\downloads
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Terminal 2 - Frontend Server (Port 3000)
+```bash
+npm start
+```
+
+The app will automatically open at [http://localhost:3000](http://localhost:3000)
+
+## Usage
+
+1. **Paste a video URL** into the input field (e.g., YouTube, Vimeo, X)
+2. **Click "Fetch Video"** to retrieve video information
+3. **Select quality** from available formats
+4. **(Optional) Enable video trimming** and set start/end times
+5. **Click "Initialize Download"** to process and download
+
+## Supported Platforms
+
+- YouTube
+- Vimeo  
+- X (Twitter)
+- Instagram
+- TikTok
+- Facebook
+- Reddit
+- Twitch
+- And [1000+ more platforms](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
+
+## Project Structure
+
+```
+download-video-from-url/
+├── server.js              # Express backend with yt-dlp integration
+├── src/
+│   ├── components/
+│   │   ├── VideoDownloader.tsx  # Main downloader component
+│   │   ├── VideoInfo.tsx        # Video info & controls
+│   │   └── VideoPlayer.tsx      # Video player component
+│   └── App.tsx            # React router setup
+├── downloads/             # Downloaded videos (auto-created)
+└── package.json
+```
+
+## API Endpoints
+
+- `POST /api/info` - Fetch video metadata
+- `POST /api/download` - Start video download
+- `GET /api/status/:id` - Check download status
+- `GET /api/health` - Health check
+
+## Troubleshooting
+
+**"Failed to start yt-dlp" error**:
+- Make sure yt-dlp is installed and accessible in your PATH
+- Run `yt-dlp --version` to verify
+
+**CORS errors**:
+- Ensure both servers are running on the correct ports (3000 for frontend, 4000 for backend)
+
+**Download fails**:
+- Some platforms may require authentication or have geographic restrictions
+- Check if the video is publicly accessible
+
+## Technologies
+
+**Frontend**: React, TypeScript, TailwindCSS, Framer Motion, Lucide Icons  
+**Backend**: Node.js, Express, yt-dlp  
+**Download Engine**: yt-dlp (Python-based universal video downloader)
+
+## License
+
+This project is open source and available under the MIT License.
+
+---
+
+**Note**: This tool is for personal use only. Respect copyright laws and terms of service of the platforms you download from.
