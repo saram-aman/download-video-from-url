@@ -4,7 +4,7 @@ import { Search, Loader2, PlayCircle, Download, CheckCircle2, AlertCircle, Spark
 import { motion, AnimatePresence } from 'framer-motion';
 import VideoInfo from './VideoInfo';
 
-const API_BASE = 'http://localhost:4000/api';
+const API_BASE = 'https://video-download-api.vercel.app/api';
 
 const VideoDownloader: React.FC = () => {
     const [url, setUrl] = useState('');
