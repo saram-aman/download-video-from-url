@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Download, Scissors, Play, CheckCircle, Info, Settings2, Clock } from 'lucide-react';
+import { Download, Scissors, Play, CheckCircle, Settings2, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 
 interface VideoInfoProps {
     info: {
